@@ -34,6 +34,15 @@ factory.TweenPosition(targetPosition, 5, EasingType.Linear);
 factory.StartTween();
 ```
 
+### Tweening Color
+```cs
+TweenFactory factory = new TweenFactory(this.gameObject);
+
+factory.TweenColor(color, 20, EasingType.Linear);
+
+factory.StartTween();
+```
+
 ### Tweening multiple values at once
 
 ```cs

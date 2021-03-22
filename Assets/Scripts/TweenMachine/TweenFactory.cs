@@ -1,4 +1,5 @@
 using System;
+using TweenMachine.Tweens;
 using UnityEngine;
 
 namespace TweenMachine
@@ -15,20 +16,27 @@ namespace TweenMachine
         private bool _scale = false;
         private bool _rotation = false;
         private bool _position = false;
+        private bool _color;
 
         private bool _scaleIsFinished = false;
         private bool _rotationIsFinished = false;
         private bool _positionIsFinished = false;
+        private bool _colorIsFinished = false;
+
 
         private TweenData _scaleData;
         private TweenData _rotationData;
         private TweenData _positionData;
+
+        private TweenData _colorData;
+        private Color colorData;
 
         public Action OnTweenComplete;
 
         public Action ScaleTweenComplete;
         public Action PositionTweenComplete;
         public Action RotationTweenComplete;
+        public Action ColorTweenComplete;
 
         private GameObject _gameObject;
 
@@ -61,6 +69,13 @@ namespace TweenMachine
             return this;
         }
 
+        public TweenFactory TweenColor(Color color, float speed, EasingType easingType)
+        {
+            _color = true;
+            _colorData = new TweenData {Speed = speed, Type = easingType};
+            colorData = color;
+            return this;
+        }
 
         public bool StartTween()
         {
@@ -72,7 +87,9 @@ namespace TweenMachine
 
             if (_position)
             {
-                Tween tween = CreateTween(_positionData, _gameObject.transform.position);
+                Tween tween = new TweenScale(_gameObject, _positionData.Value, _positionData.Speed,
+                    TweenMatcher.Matcher[_positionData.Type]);
+
                 tween.OnComplete = () =>
                 {
                     PositionTweenComplete?.Invoke();
@@ -80,12 +97,13 @@ namespace TweenMachine
                     CheckComplete();
                 };
 
-                TweenController.Instance.ActiveTweens[TweenType.Position].Add(tween);
+                TweenController.Instance.ActiveTweens.Add(tween);
             }
 
             if (_scale)
             {
-                Tween tween = CreateTween(_scaleData, _gameObject.transform.localScale);
+                Tween tween = new TweenScale(_gameObject, _scaleData.Value, _scaleData.Speed,
+                    TweenMatcher.Matcher[_scaleData.Type]);
 
                 tween.OnComplete = () =>
                 {
@@ -94,30 +112,42 @@ namespace TweenMachine
                     CheckComplete();
                 };
 
-                TweenController.Instance.ActiveTweens[TweenType.Scale].Add(tween);
+                TweenController.Instance.ActiveTweens.Add(tween);
             }
 
             if (_rotation)
             {
-                Tween tween = CreateTween(_rotationData, _gameObject.transform.rotation.eulerAngles);
+                Tween tween = new TweenRotation(_gameObject, _rotationData.Value, _rotationData.Speed,
+                    TweenMatcher.Matcher[_rotationData.Type]);
+
                 tween.OnComplete = () =>
                 {
-                    RotationTweenComplete.Invoke();
+                    RotationTweenComplete?.Invoke();
                     _rotationIsFinished = true;
                     CheckComplete();
                 };
 
-                TweenController.Instance.ActiveTweens[TweenType.Rotation].Add(tween);
+                TweenController.Instance.ActiveTweens.Add(tween);
+            }
+
+            if (_color)
+            {
+                Tween tween = new TweenColor(_gameObject, colorData, _colorData.Speed,
+                    TweenMatcher.Matcher[_colorData.Type]);
+
+                tween.OnComplete = () =>
+                {
+                    ColorTweenComplete?.Invoke();
+                    _colorIsFinished = true;
+                    CheckComplete();
+                };
+
+                TweenController.Instance.ActiveTweens.Add(tween);
             }
 
             return true;
         }
 
-
-        private Tween CreateTween(TweenData data, Vector3 startPosition)
-        {
-            return new Tween(_gameObject, data.Value, data.Speed, startPosition, TweenMatcher.Matcher[data.Type]);
-        }
 
         private void CheckComplete()
         {
@@ -126,6 +156,8 @@ namespace TweenMachine
             if (_scale && !_scaleIsFinished)
                 return;
             if (_position && !_positionIsFinished)
+                return;
+            if (_color && !_colorIsFinished)
                 return;
 
             OnTweenComplete?.Invoke();
