@@ -87,7 +87,7 @@ namespace TweenMachine
 
             if (_position)
             {
-                Tween tween = new TweenScale(_gameObject, _positionData.Value, _positionData.Speed,
+                Tween tween = new TweenPosition(_gameObject, _positionData.Value, _positionData.Speed,
                     TweenMatcher.Matcher[_positionData.Type]);
 
                 tween.OnComplete = () =>

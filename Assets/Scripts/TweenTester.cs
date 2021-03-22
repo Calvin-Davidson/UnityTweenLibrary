@@ -12,9 +12,6 @@ public class TweenTester : MonoBehaviour
 
     void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.Space))
-        //     TweenController.Instance.MoveGameObject(gameObject, targetPosition, speed, easingType);
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TweenFactory factory = new TweenFactory(this.gameObject);

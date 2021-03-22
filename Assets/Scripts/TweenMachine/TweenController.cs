@@ -10,7 +10,7 @@ namespace TweenMachine
         private static TweenController _instance;
 
         private readonly List<Tween> _activeTweens = new List<Tween>();
-
+        public bool stopTweens = false;
 
         private void Awake()
         {
@@ -27,7 +27,11 @@ namespace TweenMachine
 
         private void Update()
         {
-            if (_activeTweens.Count < 1) return;
+            if (stopTweens) return;
+            if (_activeTweens.Count < 1)
+            {
+                Destroy(this.gameObject);
+            }
 
             for (int i = 0; i < _activeTweens.Count; i++)
             {
