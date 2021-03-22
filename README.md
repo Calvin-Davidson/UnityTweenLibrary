@@ -75,5 +75,38 @@ factory.StartTween();
 ```
 
 
+## Easing types supported
+    Linear
+    EaseInSine
+    EaseOutSine
+    EaseInOutSine
+    EaseInCubic
+    EaseOutCubic
+    EaseInOutCubic
+    EaseInQuint
+    EaseOutQuint
+    EaseInOutQuint
+    EaseInCirc
+    EaseOutCirc
+    EaseInOutCirc
+    EaseInElastic
+    EaseOutElastic
+    EaseInOutElastic
+    EaseInQuad
+    EaseOutQuad
+    EaseInOutQuad
+    EaseInQuart
+    EaseOutQuart
+    EaseInOutQuart
+    EaseInExpo
+    EaseOutExpo
+    EaseInOutExpo
+    EaseInBack
+    EaseOutBack
+    EaseInOutBack
+    EaseInBounce
+    EaseOutBounce
+    EaseInOutBounce
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
