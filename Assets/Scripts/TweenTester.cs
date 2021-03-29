@@ -19,7 +19,7 @@ public class TweenTester : MonoBehaviour
             factory.TweenPosition(targetPosition, 5, EasingType.Linear);
             factory.TweenRotation(new Vector3(45, 45, 0), 5, EasingType.Linear);
             factory.TweenScale(new Vector3(0.5f, 0.5f, 0.5f), 5, EasingType.Linear);
-            factory.TweenColor(color, 20, EasingType.Linear);
+            factory.TweenColor(color, 8, EasingType.Linear);
 
             factory.OnTweenComplete = () =>
             {

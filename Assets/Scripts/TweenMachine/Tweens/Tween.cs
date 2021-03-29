@@ -25,6 +25,32 @@ namespace TweenMachine.Tweens
         }
         
         public bool IsFinished { get; protected set; }
-        public abstract void UpdateTween(float deltaTime);
+
+        public virtual void UpdateTween(float deltaTime)
+        {
+            {
+                if (!_started)
+                {
+                    _started = true;
+                    OnStart?.Invoke();
+                }
+            
+                OnUpdate?.Invoke();
+                if (_percent < 1)
+                {
+                    _percent += deltaTime / _speed;
+                    float easingstep = _tweenMethode(_percent);
+                    OnTweenUpdate(easingstep);
+                    return;
+                }
+
+                OnTweenComplete();
+                IsFinished = true;
+                OnComplete?.Invoke();
+            }
+        }
+
+        protected abstract void OnTweenComplete();
+        protected abstract void OnTweenUpdate(float easeStep);
     }
 }

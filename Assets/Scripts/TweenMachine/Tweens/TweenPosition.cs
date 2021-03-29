@@ -17,27 +17,15 @@ namespace TweenMachine.Tweens
             
             Direction = TargetPosition - StartPosition;
         }
-        
-        public override void UpdateTween(float deltaTime)
+
+        protected override void OnTweenComplete()
         {
-            if (!_started)
-            {
-                _started = true;
-                OnStart?.Invoke();
-            }
-
-            OnUpdate?.Invoke();
-            if (_percent < 1)
-            {
-                _percent += deltaTime / _speed;
-                float easingstep = _tweenMethode(_percent);
-                _gameObject.transform.position = StartPosition + (Direction * easingstep);
-                return;
-            }
-
             _gameObject.transform.position = TargetPosition;
-            IsFinished = true;
-            OnComplete?.Invoke();
+        }
+
+        protected override void OnTweenUpdate(float easeStep)
+        {
+            _gameObject.transform.position = StartPosition + (Direction * easeStep);
         }
     }
 }

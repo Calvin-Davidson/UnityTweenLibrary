@@ -158,6 +158,7 @@ MonoBehaviour:
   targetPosition: {x: 5, y: 2, z: 0}
   speed: 5
   easingType: 18
+  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &84153374
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -269,6 +270,7 @@ MonoBehaviour:
   targetPosition: {x: 5, y: -4, z: 0}
   speed: 5
   easingType: 20
+  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &202997433
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -380,6 +382,7 @@ MonoBehaviour:
   targetPosition: {x: -5, y: 4, z: 0}
   speed: 2
   easingType: 29
+  color: {r: 0, g: 1, b: 1, a: 0}
 --- !u!65 &638168941
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -491,6 +494,7 @@ MonoBehaviour:
   targetPosition: {x: 5, y: -2, z: 0}
   speed: 5
   easingType: 28
+  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &702316449
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -778,6 +782,7 @@ MonoBehaviour:
   targetPosition: {x: 5, y: 0, z: 0}
   speed: 5
   easingType: 29
+  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &1306215831
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -883,6 +888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9155f9f9491a84c3d83d13228f639d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stopTweens: 0
 --- !u!4 &1944384620
 Transform:
   m_ObjectHideFlags: 0

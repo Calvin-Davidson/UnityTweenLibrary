@@ -16,28 +16,14 @@ namespace TweenMachine.Tweens
             StartColor = Material.color;
             TargetColor = targetColor;
         }
-
-        public override void UpdateTween(float deltaTime)
+        protected override void OnTweenComplete()
         {
-            if (!_started)
-            {
-                _started = true;
-                OnStart?.Invoke();
-            }
-            
-            OnUpdate?.Invoke();
-            if (_percent < 1)
-            {
-                _percent += deltaTime / _speed;
-                float easingstep = _tweenMethode(_percent);
-
-                Material.color = Color.LerpUnclamped(StartColor, TargetColor, easingstep);
-                return;
-            }
-
             Material.color = TargetColor;
-            IsFinished = true;
-            OnComplete?.Invoke();
+        }
+
+        protected override void OnTweenUpdate(float easeStep)
+        {
+            Material.color = Color.LerpUnclamped(StartColor, TargetColor, easeStep);
         }
     }
 }

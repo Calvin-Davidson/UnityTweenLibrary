@@ -102,8 +102,6 @@ namespace TweenMachine
             {
                 EasingType.EaseInOutBounce, TweenMethode.EaseInOutBounce
             },
-
-            
         };
     }
 }

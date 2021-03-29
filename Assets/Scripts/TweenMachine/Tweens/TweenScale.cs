@@ -16,27 +16,14 @@ namespace TweenMachine.Tweens
             TargetScale = targetScale;
         }
 
-        public override void UpdateTween(float deltaTime)
+        protected override void OnTweenComplete()
         {
-            if (!_started)
-            {
-                _started = true;
-                OnStart?.Invoke();
-            }
-            
-            OnUpdate?.Invoke();
-            if (_percent < 1)
-            {
-                _percent += deltaTime / _speed;
-                float easingstep = _tweenMethode(_percent);
-
-                _gameObject.transform.localScale = Vector3.LerpUnclamped(StartScale, TargetScale, easingstep);
-                return;
-            }
-
             _gameObject.transform.localScale = TargetScale;
-            IsFinished = true;
-            OnComplete?.Invoke();
+        }
+
+        protected override void OnTweenUpdate(float easeStep)
+        {
+            _gameObject.transform.localScale = Vector3.LerpUnclamped(StartScale, TargetScale, easeStep);
         }
     }
 }
