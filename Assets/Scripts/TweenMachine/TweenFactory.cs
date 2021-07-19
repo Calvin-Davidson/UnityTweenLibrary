@@ -1,35 +1,27 @@
 using System;
 using TweenMachine.Tweens;
 using UnityEngine;
+using Object = System.Object;
 
 namespace TweenMachine
 {
     struct TweenData
     {
-        public Vector3 Value;
+        public Object Value;
         public float Speed;
         public EasingType Type;
+        public bool IsActive;
     }
 
     public class TweenFactory
     {
-        private bool _scale = false;
-        private bool _rotation = false;
-        private bool _position = false;
-        private bool _color;
-
-        private bool _scaleIsFinished = false;
-        private bool _rotationIsFinished = false;
-        private bool _positionIsFinished = false;
-        private bool _colorIsFinished = false;
+        private int _finishedTweens = 0;
 
 
         private TweenData _scaleData;
         private TweenData _rotationData;
         private TweenData _positionData;
-
         private TweenData _colorData;
-        private Color colorData;
 
         public Action OnTweenComplete;
 
@@ -50,115 +42,89 @@ namespace TweenMachine
 
         public TweenFactory TweenScale(Vector3 targetScale, float speed, EasingType easingType)
         {
-            _scale = true;
-            _scaleData = new TweenData {Speed = speed, Type = easingType, Value = targetScale};
+            _scaleData = new TweenData {Speed = speed, Type = easingType, Value = targetScale, IsActive = true};
             return this;
         }
 
         public TweenFactory TweenRotation(Vector3 targetRotation, float speed, EasingType easingType)
         {
-            _rotation = true;
-            _rotationData = new TweenData {Speed = speed, Type = easingType, Value = targetRotation};
+            _rotationData = new TweenData {Speed = speed, Type = easingType, Value = targetRotation, IsActive = true};
             return this;
         }
 
         public TweenFactory TweenPosition(Vector3 targetPosition, float speed, EasingType easingType)
         {
-            _position = true;
-            _positionData = new TweenData {Speed = speed, Type = easingType, Value = targetPosition};
+            _positionData = new TweenData {Speed = speed, Type = easingType, Value = targetPosition, IsActive = true};
             return this;
         }
 
         public TweenFactory TweenColor(Color color, float speed, EasingType easingType)
         {
-            _color = true;
-            _colorData = new TweenData {Speed = speed, Type = easingType};
-            colorData = color;
+            _colorData = new TweenData {Speed = speed, Type = easingType, Value = color, IsActive = true};
             return this;
         }
 
         public bool StartTween()
         {
-            if (_position == false && _rotation == false && _scale == false)
+            if (!_positionData.IsActive && !_colorData.IsActive && !_scaleData.IsActive && !_rotationData.IsActive)
             {
                 Debug.unityLogger.Log(LogType.Warning, "TweenFactory doesn't tween anything...");
                 return false;
             }
 
-            if (_position)
+            if (_positionData.IsActive)
             {
-                Tween tween = new TweenPosition(_gameObject, _positionData.Value, _positionData.Speed,
+                Tween tween = new TweenPosition(_gameObject, (Vector3) _positionData.Value, _positionData.Speed,
                     TweenMatcher.Matcher[_positionData.Type]);
 
-                tween.OnComplete = () =>
-                {
-                    PositionTweenComplete?.Invoke();
-                    _positionIsFinished = true;
-                    CheckComplete();
-                };
-
-                TweenController.Instance.ActiveTweens.Add(tween);
+                CompleteTween(tween, PositionTweenComplete);
             }
 
-            if (_scale)
+            if (_scaleData.IsActive)
             {
-                Tween tween = new TweenScale(_gameObject, _scaleData.Value, _scaleData.Speed,
+                Tween tween = new TweenScale(_gameObject, (Vector3) _scaleData.Value, _scaleData.Speed,
                     TweenMatcher.Matcher[_scaleData.Type]);
 
-                tween.OnComplete = () =>
-                {
-                    ScaleTweenComplete?.Invoke();
-                    _scaleIsFinished = true;
-                    CheckComplete();
-                };
-
-                TweenController.Instance.ActiveTweens.Add(tween);
+                CompleteTween(tween, ScaleTweenComplete);
             }
 
-            if (_rotation)
+            if (_rotationData.IsActive)
             {
-                Tween tween = new TweenRotation(_gameObject, _rotationData.Value, _rotationData.Speed,
+                Tween tween = new TweenRotation(_gameObject, (Vector3) _rotationData.Value, _rotationData.Speed,
                     TweenMatcher.Matcher[_rotationData.Type]);
 
-                tween.OnComplete = () =>
-                {
-                    RotationTweenComplete?.Invoke();
-                    _rotationIsFinished = true;
-                    CheckComplete();
-                };
-
-                TweenController.Instance.ActiveTweens.Add(tween);
+                CompleteTween(tween, RotationTweenComplete);
             }
 
-            if (_color)
+            if (_colorData.IsActive)
             {
-                Tween tween = new TweenColor(_gameObject, colorData, _colorData.Speed,
+                Tween tween = new TweenColor(_gameObject, (Color) _colorData.Value, _colorData.Speed,
                     TweenMatcher.Matcher[_colorData.Type]);
 
-                tween.OnComplete = () =>
-                {
-                    ColorTweenComplete?.Invoke();
-                    _colorIsFinished = true;
-                    CheckComplete();
-                };
-
-                TweenController.Instance.ActiveTweens.Add(tween);
+                CompleteTween(tween, ColorTweenComplete);
             }
 
             return true;
         }
 
 
+        private void CompleteTween(Tween tween, Action onCompleteAction)
+        {
+            tween.OnComplete = () =>
+            {
+                onCompleteAction?.Invoke();
+                _finishedTweens += 1;
+                CheckComplete();
+            };
+
+            TweenController.Instance.ActiveTweens.Add(tween);
+        }
+
         private void CheckComplete()
         {
-            if (_rotation && !_rotationIsFinished)
-                return;
-            if (_scale && !_scaleIsFinished)
-                return;
-            if (_position && !_positionIsFinished)
-                return;
-            if (_color && !_colorIsFinished)
-                return;
+            int tweenAmount = 0;
+            if (_rotationData.IsActive || _scaleData.IsActive || _positionData.IsActive || _colorData.IsActive) tweenAmount += 1;
+            if (tweenAmount != _finishedTweens) return;
 
             OnTweenComplete?.Invoke();
         }
